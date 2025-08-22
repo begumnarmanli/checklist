@@ -46,7 +46,18 @@
       }
 
       body {
+        overflow-x: hidden;
         font-family: "Inter", sans-serif;
+      }
+      html {
+        overflow-x: hidden;
+      }
+      .container,
+      .task-item,
+      .add-task-input,
+      .add-task-btn {
+        max-width: 100%;
+        box-sizing: border-box;
       }
 
       .logo-font {
@@ -94,6 +105,7 @@
 
       .slide-in {
         animation: slideIn 0.3s ease-out;
+        transform: translateX(0);
       }
 
       @keyframes slideIn {
@@ -139,6 +151,7 @@
 
       .progress-bar {
         transition: width 0.5s ease;
+        max-width: 100%;
       }
     </style>
   </head>
@@ -368,7 +381,8 @@
             setTimeout(() => {
               const confetti = document.createElement("div");
               confetti.className = "confetti";
-              confetti.style.left = Math.random() * 100 + "vw";
+              const maxLeft = Math.max(0, window.innerWidth - 10);
+              confetti.style.left = Math.floor(Math.random() * maxLeft) + "px";
               confetti.style.animationDelay = Math.random() * 3 + "s";
               document.body.appendChild(confetti);
 
