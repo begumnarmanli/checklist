@@ -1,354 +1,426 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="https://static.readdy.ai/static/e.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <script src="https://static.readdy.ai/static/e.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Fun Checklist App</title>
+    <link rel="icon" href="paper.png" type="image/png" />
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#8B4513',
-                        secondary: '#FFA500'
-                    },
-                    borderRadius: {
-                        'none': '0px',
-                        'sm': '4px',
-                        DEFAULT: '8px',
-                        'md': '12px',
-                        'lg': '16px',
-                        'xl': '20px',
-                        '2xl': '24px',
-                        '3xl': '32px',
-                        'full': '9999px',
-                        'button': '8px'
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#8B4513",
+              secondary: "#FFA500",
+            },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
     </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
     <style>
-        :where([class^="ri-"])::before {
-            content: "\f3c2";
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .logo-font {
+        font-family: "Pacifico", serif;
+      }
+
+      .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #ffa500;
+        animation: confetti-fall 3s linear forwards;
+        z-index: 1000;
+      }
+
+      .confetti:nth-child(odd) {
+        background: #8b4513;
+        animation-delay: 0.5s;
+      }
+
+      .confetti:nth-child(3n) {
+        background: #ffd700;
+        animation-delay: 1s;
+      }
+
+      @keyframes confetti-fall {
+        0% {
+          transform: translateY(-100vh) rotate(0deg);
+          opacity: 1;
         }
-        
-        body {
-            font-family: 'Inter', sans-serif;
+        100% {
+          transform: translateY(100vh) rotate(720deg);
+          opacity: 0;
         }
-        
-        .logo-font {
-            font-family: 'Pacifico', serif;
+      }
+
+      .task-item {
+        transition: all 0.3s ease;
+      }
+
+      .task-completed {
+        text-decoration: line-through;
+        opacity: 0.6;
+      }
+
+      .slide-in {
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-100%);
+          opacity: 0;
         }
-        
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #FFA500;
-            animation: confetti-fall 3s linear forwards;
-            z-index: 1000;
+        to {
+          transform: translateX(0);
+          opacity: 1;
         }
-        
-        .confetti:nth-child(odd) {
-            background: #8B4513;
-            animation-delay: 0.5s;
-        }
-        
-        .confetti:nth-child(3n) {
-            background: #FFD700;
-            animation-delay: 1s;
-        }
-        
-        @keyframes confetti-fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        
-        .task-item {
-            transition: all 0.3s ease;
-        }
-        
-        .task-completed {
-            text-decoration: line-through;
-            opacity: 0.6;
-        }
-        
-        .slide-in {
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        .modal-overlay {
-            backdrop-filter: blur(4px);
-        }
-        
-        .checkbox-custom {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #8B4513;
-            border-radius: 4px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .checkbox-custom:checked {
-            background-color: #8B4513;
-            border-color: #8B4513;
-        }
-        
-        .checkbox-custom:checked::after {
-            content: '✓';
-            position: absolute;
-            top: -2px;
-            left: 2px;
-            color: white;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .progress-bar {
-            transition: width 0.5s ease;
-        }
+      }
+
+      .modal-overlay {
+        backdrop-filter: blur(4px);
+      }
+
+      .checkbox-custom {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #8b4513;
+        border-radius: 4px;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .checkbox-custom:checked {
+        background-color: #8b4513;
+        border-color: #8b4513;
+      }
+
+      .checkbox-custom:checked::after {
+        content: "✓";
+        position: absolute;
+        top: -2px;
+        left: 2px;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .progress-bar {
+        transition: width 0.5s ease;
+      }
     </style>
-    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiQ2hlY2tNYXRlIiwic2hvcnRfbmFtZSI6IkNoZWNrTWF0ZSIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiIjOEI0NTEzIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbDtiYXNlNjQsUEhOMlp5QjNhV1IwYUQwaU1USTRJaUJvWldsbmFIUTlJakV5T0NJZ2RtbGxkMEp2ZUQwaU1DQXdJREV5T0NBeU9EZ2lJSGh0Ykc1elBTSm9kSFJ3T2k4dmQzZDNMbmN6TG05eVp5OHlNREF3TDNOMlp5SStQSEpsWTNRZ2QybGtkR2c5SWpFeU9DSWdhR1ZwWjJoMFBTSXlPRGdpSUhKNFBTSXhOQ0lnWm1sc2JEMGlJemc0TkRVeE15SS9QaUE4TDNKbFkzUStQQzl6ZG1jKyIsInNpemVzIjoiMTI4eDEyOCIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
-</head>
-<body class="bg-gradient-to-br from-orange-50 to-amber-50 min-h-screen">
+  </head>
+  <body class="bg-gradient-to-br from-orange-50 to-amber-50 min-h-screen">
     <div class="container mx-auto px-4 py-6 max-w-md">
-        <header class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold text-primary logo-font">CheckMate</h1>
-            <button id="addListBtn" class="w-12 h-12 bg-secondary hover:bg-orange-600 text-white !rounded-button flex items-center justify-center shadow-lg transition-all duration-200 whitespace-nowrap">
-                <i class="ri-add-line text-xl"></i>
-            </button>
-        </header>
+      <header class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-primary logo-font">CheckMate</h1>
+        <button
+          id="addListBtn"
+          class="w-12 h-12 bg-secondary hover:bg-orange-600 text-white !rounded-button flex items-center justify-center shadow-lg transition-all duration-200 whitespace-nowrap"
+        >
+          <i class="ri-add-line text-xl"></i>
+        </button>
+      </header>
 
-        <div id="emptyState" class="text-center py-16 hidden">
-            <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-secondary to-orange-600 !rounded-button flex items-center justify-center">
-                <i class="ri-checkbox-line text-4xl text-white"></i>
-            </div>
-            <h2 class="text-xl font-semibold text-gray-700 mb-2">No Lists Yet</h2>
-            <p class="text-gray-500 mb-6">Create your first checklist to get started!</p>
-            <button id="createFirstList" class="bg-primary hover:bg-amber-800 text-white px-6 py-3 !rounded-button font-medium transition-all duration-200 whitespace-nowrap">
-                Create First List
-            </button>
+      <div id="emptyState" class="text-center py-16 hidden">
+        <div
+          class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-secondary to-orange-600 !rounded-button flex items-center justify-center"
+        >
+          <i class="ri-checkbox-line text-4xl text-white"></i>
         </div>
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">No Lists Yet</h2>
+        <p class="text-gray-500 mb-6">
+          Create your first checklist to get started!
+        </p>
+        <button
+          id="createFirstList"
+          class="bg-primary hover:bg-amber-800 text-white px-6 py-3 !rounded-button font-medium transition-all duration-200 whitespace-nowrap"
+        >
+          Create First List
+        </button>
+      </div>
 
-        <div id="listsContainer" class="space-y-6">
-        </div>
+      <div id="listsContainer" class="space-y-6"></div>
     </div>
 
-    <div id="newListModal" class="fixed inset-0 bg-black bg-opacity-50 modal-overlay hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl p-6 w-full max-w-sm">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">New Checklist</h3>
-                <button id="closeModal" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600">
-                    <i class="ri-close-line text-xl"></i>
-                </button>
-            </div>
-            <input type="text" id="listTitleInput" placeholder="What do you want to check off today?" class="w-full px-4 py-3 border border-gray-200 !rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm">
-            <div class="flex gap-3 mt-6">
-                <button id="cancelBtn" class="flex-1 px-4 py-3 border border-gray-200 text-gray-600 !rounded-button font-medium hover:bg-gray-50 transition-all duration-200 whitespace-nowrap">
-                    Cancel
-                </button>
-                <button id="createListBtn" class="flex-1 px-4 py-3 bg-primary hover:bg-amber-800 text-white !rounded-button font-medium transition-all duration-200 whitespace-nowrap">
-                    Create
-                </button>
-            </div>
+    <div
+      id="newListModal"
+      class="fixed inset-0 bg-black bg-opacity-50 modal-overlay hidden z-50 flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-xl p-6 w-full max-w-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-gray-800">New Checklist</h3>
+          <button
+            id="closeModal"
+            class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600"
+          >
+            <i class="ri-close-line text-xl"></i>
+          </button>
         </div>
+        <input
+          type="text"
+          id="listTitleInput"
+          placeholder="What do you want to check off today?"
+          class="w-full px-4 py-3 border border-gray-200 !rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+        />
+        <div class="flex gap-3 mt-6">
+          <button
+            id="cancelBtn"
+            class="flex-1 px-4 py-3 border border-gray-200 text-gray-600 !rounded-button font-medium hover:bg-gray-50 transition-all duration-200 whitespace-nowrap"
+          >
+            Cancel
+          </button>
+          <button
+            id="createListBtn"
+            class="flex-1 px-4 py-3 bg-primary hover:bg-amber-800 text-white !rounded-button font-medium transition-all duration-200 whitespace-nowrap"
+          >
+            Create
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div id="deleteConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 modal-overlay hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl p-6 w-full max-w-sm">
-            <div class="text-center">
-                <div class="w-16 h-16 mx-auto mb-4 bg-red-100 !rounded-button flex items-center justify-center">
-                    <i class="ri-delete-bin-line text-2xl text-red-600"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-800 mb-2">Delete List?</h3>
-                <p class="text-gray-600 mb-6">This action cannot be undone. All tasks in this list will be permanently deleted.</p>
-                <div class="flex gap-3">
-                    <button id="cancelDelete" class="flex-1 px-4 py-3 border border-gray-200 text-gray-600 !rounded-button font-medium hover:bg-gray-50 transition-all duration-200 whitespace-nowrap">
-                        Cancel
-                    </button>
-                    <button id="confirmDelete" class="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white !rounded-button font-medium transition-all duration-200 whitespace-nowrap">
-                        Delete
-                    </button>
-                </div>
-            </div>
+    <div
+      id="deleteConfirmModal"
+      class="fixed inset-0 bg-black bg-opacity-50 modal-overlay hidden z-50 flex items-center justify-center p-4"
+    >
+      <div class="bg-white rounded-xl p-6 w-full max-w-sm">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 mx-auto mb-4 bg-red-100 !rounded-button flex items-center justify-center"
+          >
+            <i class="ri-delete-bin-line text-2xl text-red-600"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">Delete List?</h3>
+          <p class="text-gray-600 mb-6">
+            This action cannot be undone. All tasks in this list will be
+            permanently deleted.
+          </p>
+          <div class="flex gap-3">
+            <button
+              id="cancelDelete"
+              class="flex-1 px-4 py-3 border border-gray-200 text-gray-600 !rounded-button font-medium hover:bg-gray-50 transition-all duration-200 whitespace-nowrap"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmDelete"
+              class="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white !rounded-button font-medium transition-all duration-200 whitespace-nowrap"
+            >
+              Delete
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <script id="app-state">
-        class ChecklistApp {
-            constructor() {
-                this.lists = this.loadData();
-                this.currentDeleteId = null;
-                this.init();
-            }
+      class ChecklistApp {
+        constructor() {
+          this.lists = this.loadData();
+          this.currentDeleteId = null;
+          this.init();
+        }
 
-            init() {
-                this.bindEvents();
-                this.render();
-            }
+        init() {
+          this.bindEvents();
+          this.render();
+        }
 
-            bindEvents() {
-                document.getElementById('addListBtn').addEventListener('click', () => this.showNewListModal());
-                document.getElementById('createFirstList').addEventListener('click', () => this.showNewListModal());
-                document.getElementById('closeModal').addEventListener('click', () => this.hideNewListModal());
-                document.getElementById('cancelBtn').addEventListener('click', () => this.hideNewListModal());
-                document.getElementById('createListBtn').addEventListener('click', () => this.createList());
-                document.getElementById('cancelDelete').addEventListener('click', () => this.hideDeleteModal());
-                document.getElementById('confirmDelete').addEventListener('click', () => this.deleteList());
-                
-                document.getElementById('listTitleInput').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.createList();
-                });
-            }
+        bindEvents() {
+          document
+            .getElementById("addListBtn")
+            .addEventListener("click", () => this.showNewListModal());
+          document
+            .getElementById("createFirstList")
+            .addEventListener("click", () => this.showNewListModal());
+          document
+            .getElementById("closeModal")
+            .addEventListener("click", () => this.hideNewListModal());
+          document
+            .getElementById("cancelBtn")
+            .addEventListener("click", () => this.hideNewListModal());
+          document
+            .getElementById("createListBtn")
+            .addEventListener("click", () => this.createList());
+          document
+            .getElementById("cancelDelete")
+            .addEventListener("click", () => this.hideDeleteModal());
+          document
+            .getElementById("confirmDelete")
+            .addEventListener("click", () => this.deleteList());
 
-            showNewListModal() {
-                document.getElementById('newListModal').classList.remove('hidden');
-                document.getElementById('listTitleInput').focus();
-            }
+          document
+            .getElementById("listTitleInput")
+            .addEventListener("keypress", (e) => {
+              if (e.key === "Enter") this.createList();
+            });
+        }
 
-            hideNewListModal() {
-                document.getElementById('newListModal').classList.add('hidden');
-                document.getElementById('listTitleInput').value = '';
-            }
+        showNewListModal() {
+          document.getElementById("newListModal").classList.remove("hidden");
+          document.getElementById("listTitleInput").focus();
+        }
 
+        hideNewListModal() {
+          document.getElementById("newListModal").classList.add("hidden");
+          document.getElementById("listTitleInput").value = "";
+        }
 
-            showDeleteModal(listId) {
-                this.currentDeleteId = listId;
-                document.getElementById('deleteConfirmModal').classList.remove('hidden');
-            }
+        showDeleteModal(listId) {
+          this.currentDeleteId = listId;
+          document
+            .getElementById("deleteConfirmModal")
+            .classList.remove("hidden");
+        }
 
-            hideDeleteModal() {
-                document.getElementById('deleteConfirmModal').classList.add('hidden');
-                this.currentDeleteId = null;
-            }
+        hideDeleteModal() {
+          document.getElementById("deleteConfirmModal").classList.add("hidden");
+          this.currentDeleteId = null;
+        }
 
-            createList() {
-                const title = document.getElementById('listTitleInput').value.trim();
-                if (!title) return;
+        createList() {
+          const title = document.getElementById("listTitleInput").value.trim();
+          if (!title) return;
 
-                const newList = {
-                    id: Date.now(),
-                    title: title,
-                    tasks: [],
-                    createdAt: new Date().toISOString()
-                };
+          const newList = {
+            id: Date.now(),
+            title: title,
+            tasks: [],
+            createdAt: new Date().toISOString(),
+          };
 
-                this.lists.unshift(newList);
-                this.saveData();
-                this.render();
-                this.hideNewListModal();
-            }
+          this.lists.unshift(newList);
+          this.saveData();
+          this.render();
+          this.hideNewListModal();
+        }
 
-            deleteList() {
-                this.lists = this.lists.filter(list => list.id !== this.currentDeleteId);
-                this.saveData();
-                this.render();
-                this.hideDeleteModal();
-            }
+        deleteList() {
+          this.lists = this.lists.filter(
+            (list) => list.id !== this.currentDeleteId
+          );
+          this.saveData();
+          this.render();
+          this.hideDeleteModal();
+        }
 
-            addTask(listId, taskText) {
-                const list = this.lists.find(l => l.id === listId);
-                if (!list || !taskText.trim()) return;
+        addTask(listId, taskText) {
+          const list = this.lists.find((l) => l.id === listId);
+          if (!list || !taskText.trim()) return;
 
-                const newTask = {
-                    id: Date.now(),
-                    text: taskText.trim(),
-                    completed: false,
-                    createdAt: new Date().toISOString()
-                };
+          const newTask = {
+            id: Date.now(),
+            text: taskText.trim(),
+            completed: false,
+            createdAt: new Date().toISOString(),
+          };
 
-                list.tasks.push(newTask);
-                this.saveData();
-                this.renderList(list);
-            }
+          list.tasks.push(newTask);
+          this.saveData();
+          this.renderList(list);
+        }
 
-            toggleTask(listId, taskId) {
-                const list = this.lists.find(l => l.id === listId);
-                const task = list.tasks.find(t => t.id === taskId);
-                
-                task.completed = !task.completed;
-                this.saveData();
-                this.renderList(list);
+        toggleTask(listId, taskId) {
+          const list = this.lists.find((l) => l.id === listId);
+          const task = list.tasks.find((t) => t.id === taskId);
 
-                if (list.tasks.every(t => t.completed) && list.tasks.length > 0) {
-                    this.triggerConfetti();
-                }
-            }
+          task.completed = !task.completed;
+          this.saveData();
+          this.renderList(list);
 
-            deleteTask(listId, taskId) {
-                const list = this.lists.find(l => l.id === listId);
-                list.tasks = list.tasks.filter(t => t.id !== taskId);
-                this.saveData();
-                this.renderList(list);
-            }
+          if (list.tasks.every((t) => t.completed) && list.tasks.length > 0) {
+            this.triggerConfetti();
+          }
+        }
 
-            triggerConfetti() {
-                for (let i = 0; i < 50; i++) {
-                    setTimeout(() => {
-                        const confetti = document.createElement('div');
-                        confetti.className = 'confetti';
-                        confetti.style.left = Math.random() * 100 + 'vw';
-                        confetti.style.animationDelay = Math.random() * 3 + 's';
-                        document.body.appendChild(confetti);
-                        
-                        setTimeout(() => confetti.remove(), 4000);
-                    }, i * 50);
-                }
-            }
+        deleteTask(listId, taskId) {
+          const list = this.lists.find((l) => l.id === listId);
+          list.tasks = list.tasks.filter((t) => t.id !== taskId);
+          this.saveData();
+          this.renderList(list);
+        }
 
-            render() {
-                const container = document.getElementById('listsContainer');
-                const emptyState = document.getElementById('emptyState');
+        triggerConfetti() {
+          for (let i = 0; i < 50; i++) {
+            setTimeout(() => {
+              const confetti = document.createElement("div");
+              confetti.className = "confetti";
+              confetti.style.left = Math.random() * 100 + "vw";
+              confetti.style.animationDelay = Math.random() * 3 + "s";
+              document.body.appendChild(confetti);
 
-                if (this.lists.length === 0) {
-                    container.innerHTML = '';
-                    emptyState.classList.remove('hidden');
-                    return;
-                }
+              setTimeout(() => confetti.remove(), 4000);
+            }, i * 50);
+          }
+        }
 
-                emptyState.classList.add('hidden');
-                container.innerHTML = this.lists.map(list => this.renderListHTML(list)).join('');
+        render() {
+          const container = document.getElementById("listsContainer");
+          const emptyState = document.getElementById("emptyState");
 
-                this.lists.forEach(list => this.bindListEvents(list));
-            }
+          if (this.lists.length === 0) {
+            container.innerHTML = "";
+            emptyState.classList.remove("hidden");
+            return;
+          }
 
-            renderListHTML(list) {
-                const completedTasks = list.tasks.filter(t => t.completed).length;
-                const totalTasks = list.tasks.length;
-                const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+          emptyState.classList.add("hidden");
+          container.innerHTML = this.lists
+            .map((list) => this.renderListHTML(list))
+            .join("");
 
-                return `
+          this.lists.forEach((list) => this.bindListEvents(list));
+        }
+
+        renderListHTML(list) {
+          const completedTasks = list.tasks.filter((t) => t.completed).length;
+          const totalTasks = list.tasks.length;
+          const progress =
+            totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+          return `
                     <div class="bg-white rounded-xl shadow-lg p-6 slide-in">
                         <div class="flex items-center justify-between mb-4">
-                            <h2 class="text-xl font-semibold text-gray-800 flex-1">${list.title}</h2>
-                            <button class="delete-list-btn w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-600 transition-colors" data-list-id="${list.id}">
+                            <h2 class="text-xl font-semibold text-gray-800 flex-1">${
+                              list.title
+                            }</h2>
+                            <button class="delete-list-btn w-8 h-8 flex items-center justify-center text-gray-400 hover:text-red-600 transition-colors" data-list-id="${
+                              list.id
+                            }">
                                 <i class="ri-delete-bin-line text-lg"></i>
                             </button>
                         </div>
@@ -364,89 +436,123 @@
                         </div>
 
                         <div class="space-y-3 mb-4" id="tasks-${list.id}">
-                            ${list.tasks.map(task => `
-                                <div class="task-item flex items-center gap-3 p-3 bg-gray-50 rounded-lg ${task.completed ? 'task-completed' : ''}">
-                                    <input type="checkbox" class="checkbox-custom" ${task.completed ? 'checked' : ''} data-list-id="${list.id}" data-task-id="${task.id}">
-                                    <span class="flex-1 text-gray-700">${task.text}</span>
-                                    <button class="delete-task-btn w-6 h-6 flex items-center justify-center text-gray-400 hover:text-red-600 transition-colors" data-list-id="${list.id}" data-task-id="${task.id}">
+                            ${list.tasks
+                              .map(
+                                (task) => `
+                                <div class="task-item flex items-center gap-3 p-3 bg-gray-50 rounded-lg ${
+                                  task.completed ? "task-completed" : ""
+                                }">
+                                    <input type="checkbox" class="checkbox-custom" ${
+                                      task.completed ? "checked" : ""
+                                    } data-list-id="${list.id}" data-task-id="${
+                                  task.id
+                                }">
+                                    <span class="flex-1 text-gray-700">${
+                                      task.text
+                                    }</span>
+                                    <button class="delete-task-btn w-6 h-6 flex items-center justify-center text-gray-400 hover:text-red-600 transition-colors" data-list-id="${
+                                      list.id
+                                    }" data-task-id="${task.id}">
                                         <i class="ri-close-line text-sm"></i>
                                     </button>
                                 </div>
-                            `).join('')}
+                            `
+                              )
+                              .join("")}
                         </div>
 
                         <div class="flex gap-2">
-                            <input type="text" class="add-task-input flex-1 px-4 py-3 border border-gray-200 !rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="Add a new task..." data-list-id="${list.id}">
-                            <button class="add-task-btn w-12 h-12 bg-secondary hover:bg-orange-600 text-white !rounded-button flex items-center justify-center transition-all duration-200 whitespace-nowrap" data-list-id="${list.id}">
+                            <input type="text" class="add-task-input flex-1 px-4 py-3 border border-gray-200 !rounded-button focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm" placeholder="Add a new task..." data-list-id="${
+                              list.id
+                            }">
+                            <button class="add-task-btn w-12 h-12 bg-secondary hover:bg-orange-600 text-white !rounded-button flex items-center justify-center transition-all duration-200 whitespace-nowrap" data-list-id="${
+                              list.id
+                            }">
                                 <i class="ri-add-line text-xl"></i>
                             </button>
                         </div>
                     </div>
                 `;
-            }
-
-            renderList(list) {
-                const listElement = document.querySelector(`[data-list-id="${list.id}"]`).closest('.bg-white');
-                const newHTML = this.renderListHTML(list);
-                listElement.outerHTML = newHTML;
-                this.bindListEvents(list);
-            }
-
-            bindListEvents(list) {
-                const deleteListBtn = document.querySelector(`.delete-list-btn[data-list-id="${list.id}"]`);
-                const addTaskBtn = document.querySelector(`.add-task-btn[data-list-id="${list.id}"]`);
-                const addTaskInput = document.querySelector(`.add-task-input[data-list-id="${list.id}"]`);
-                const checkboxes = document.querySelectorAll(`input[data-list-id="${list.id}"]`);
-                const deleteTaskBtns = document.querySelectorAll(`.delete-task-btn[data-list-id="${list.id}"]`);
-
-                deleteListBtn.addEventListener('click', () => this.showDeleteModal(list.id));
-                
-                addTaskBtn.addEventListener('click', () => {
-                    this.addTask(list.id, addTaskInput.value);
-                    addTaskInput.value = '';
-                });
-
-                addTaskInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.addTask(list.id, addTaskInput.value);
-                        addTaskInput.value = '';
-                    }
-                });
-
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', (e) => {
-                        const taskId = parseInt(e.target.dataset.taskId);
-                        this.toggleTask(list.id, taskId);
-                    });
-                });
-
-                deleteTaskBtns.forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const taskId = parseInt(e.target.closest('.delete-task-btn').dataset.taskId);
-                        this.deleteTask(list.id, taskId);
-                    });
-                });
-            }
-
-            saveData() {
-                localStorage.setItem('checkmate-lists', JSON.stringify(this.lists));
-            }
-
-            loadData() {
-                const saved = localStorage.getItem('checkmate-lists');
-                return saved ? JSON.parse(saved) : [];
-            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            new ChecklistApp();
-        });
+        renderList(list) {
+          const listElement = document
+            .querySelector(`[data-list-id="${list.id}"]`)
+            .closest(".bg-white");
+          const newHTML = this.renderListHTML(list);
+          listElement.outerHTML = newHTML;
+          this.bindListEvents(list);
+        }
+
+        bindListEvents(list) {
+          const deleteListBtn = document.querySelector(
+            `.delete-list-btn[data-list-id="${list.id}"]`
+          );
+          const addTaskBtn = document.querySelector(
+            `.add-task-btn[data-list-id="${list.id}"]`
+          );
+          const addTaskInput = document.querySelector(
+            `.add-task-input[data-list-id="${list.id}"]`
+          );
+          const checkboxes = document.querySelectorAll(
+            `input[data-list-id="${list.id}"]`
+          );
+          const deleteTaskBtns = document.querySelectorAll(
+            `.delete-task-btn[data-list-id="${list.id}"]`
+          );
+
+          deleteListBtn.addEventListener("click", () =>
+            this.showDeleteModal(list.id)
+          );
+
+          addTaskBtn.addEventListener("click", () => {
+            this.addTask(list.id, addTaskInput.value);
+            addTaskInput.value = "";
+          });
+
+          addTaskInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+              this.addTask(list.id, addTaskInput.value);
+              addTaskInput.value = "";
+            }
+          });
+
+          checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", (e) => {
+              const taskId = parseInt(e.target.dataset.taskId);
+              this.toggleTask(list.id, taskId);
+            });
+          });
+
+          deleteTaskBtns.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              const taskId = parseInt(
+                e.target.closest(".delete-task-btn").dataset.taskId
+              );
+              this.deleteTask(list.id, taskId);
+            });
+          });
+        }
+
+        saveData() {
+          localStorage.setItem("checkmate-lists", JSON.stringify(this.lists));
+        }
+
+        loadData() {
+          const saved = localStorage.getItem("checkmate-lists");
+          return saved ? JSON.parse(saved) : [];
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new ChecklistApp();
+      });
     </script>
 
     <script id="pwa-registration">
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          const swCode = `
                     const CACHE_NAME = 'checkmate-v1';
                     const urlsToCache = ['/'];
                     
@@ -464,30 +570,80 @@
                         );
                     });
                 `;
-                
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                
-                navigator.serviceWorker.register(swUrl)
-                    .then(registration => console.log('SW registered'))
-                    .catch(error => console.log('SW registration failed'));
-            });
-        }
+
+          const blob = new Blob([swCode], { type: "application/javascript" });
+          const swUrl = URL.createObjectURL(blob);
+
+          navigator.serviceWorker
+            .register(swUrl)
+            .then((registration) => console.log("SW registered"))
+            .catch((error) => console.log("SW registration failed"));
+        });
+      }
     </script>
-<script>
-    !function (t, e) { var o, n, p, r; e.__SV || (window.posthog = e, e._i = [], e.init = function (i, s, a) { function g(t, e) { var o = e.split("."); 2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } } (p = t.createElement("script")).type = "text/javascript", p.crossOrigin = "anonymous", p.async = !0, p.src = s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r); var u = e; for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) { var e = "posthog"; return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e }, u.people.toString = function () { return u.toString(1) + ".people (stub)" }, o = "init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "), n = 0; n < o.length; n++)g(u, o[n]); e._i.push([i, s, a]) }, e.__SV = 1) }(document, window.posthog || []);
-    posthog.init('phc_t9tkQZJiyi2ps9zUYm8TDsL6qXo4YmZx0Ot5rBlAlEd', {
-        api_host: 'https://us.i.posthog.com',
+    <script>
+      !(function (t, e) {
+        var o, n, p, r;
+        e.__SV ||
+          ((window.posthog = e),
+          (e._i = []),
+          (e.init = function (i, s, a) {
+            function g(t, e) {
+              var o = e.split(".");
+              2 == o.length && ((t = t[o[0]]), (e = o[1])),
+                (t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)));
+                });
+            }
+            ((p = t.createElement("script")).type = "text/javascript"),
+              (p.crossOrigin = "anonymous"),
+              (p.async = !0),
+              (p.src =
+                s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") +
+                "/static/array.js"),
+              (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(
+                p,
+                r
+              );
+            var u = e;
+            for (
+              void 0 !== a ? (u = e[a] = []) : (a = "posthog"),
+                u.people = u.people || [],
+                u.toString = function (t) {
+                  var e = "posthog";
+                  return (
+                    "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e
+                  );
+                },
+                u.people.toString = function () {
+                  return u.toString(1) + ".people (stub)";
+                },
+                o =
+                  "init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(
+                    " "
+                  ),
+                n = 0;
+              n < o.length;
+              n++
+            )
+              g(u, o[n]);
+            e._i.push([i, s, a]);
+          }),
+          (e.__SV = 1));
+      })(document, window.posthog || []);
+      posthog.init("phc_t9tkQZJiyi2ps9zUYm8TDsL6qXo4YmZx0Ot5rBlAlEd", {
+        api_host: "https://us.i.posthog.com",
         autocapture: false,
         capture_pageview: false,
         capture_pageleave: false,
         capture_performance: {
-            web_vitals: false,
+          web_vitals: false,
         },
         rageclick: false,
-    })
-    window.shareKey = 'O0mPwKnUoeDQarf0QZERdQ';
-    window.host = 'readdy.ai';
-</script>
-<script src="https://static.readdy.ai/static/share.js"></script></body>
+      });
+      window.shareKey = "O0mPwKnUoeDQarf0QZERdQ";
+      window.host = "readdy.ai";
+    </script>
+    <script src="https://static.readdy.ai/static/share.js"></script>
+  </body>
 </html>
