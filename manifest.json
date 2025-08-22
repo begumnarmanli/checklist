@@ -6,6 +6,8 @@
   "display": "standalone",
   "background_color": "#FFA500",
   "theme_color": "#8B4513",
+  "orientation": "portrait",
+  "viewport": "width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover",
   "icons": [
     {
       "src": "evaluation-128.png",
